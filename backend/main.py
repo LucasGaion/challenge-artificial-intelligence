@@ -1,5 +1,8 @@
 from fastapi import FastAPI
+<<<<<<< HEAD
 from fastapi.middleware.cors import CORSMiddleware
+=======
+>>>>>>> 1a2aef2be476b4f276ce1d6a88a7ceea75d47cfc
 from pydantic import BaseModel
 from rich.console import Console
 import time
@@ -7,6 +10,7 @@ import os
 import whisper
 from PIL import Image
 
+<<<<<<< HEAD
 from .indexer import (
     index_texts as idx_texts,
     index_pdfs as idx_pdfs,
@@ -15,11 +19,18 @@ from .indexer import (
     client,
     hf_ef
 )
+=======
+import chromadb
+from chromadb.config import Settings
+
+from .indexer import index_texts as idx_texts, index_pdfs as idx_pdfs, index_videos as idx_videos, index_images as idx_images, client, hf_ef
+>>>>>>> 1a2aef2be476b4f276ce1d6a88a7ceea75d47cfc
 from .prompt_engine import generate_adaptive_prompt
 
 console = Console()
 app = FastAPI()
 
+<<<<<<< HEAD
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  
@@ -28,11 +39,14 @@ app.add_middleware(
     allow_headers=["*"],  
 )
 
+=======
+>>>>>>> 1a2aef2be476b4f276ce1d6a88a7ceea75d47cfc
 
 class PromptRequest(BaseModel):
     user_input: str
 
 
+<<<<<<< HEAD
 class UserPreferences(BaseModel):
     format: str = "text"  
 
@@ -54,6 +68,8 @@ def safe_execute(label: str, func):
         return None
 
 
+=======
+>>>>>>> 1a2aef2be476b4f276ce1d6a88a7ceea75d47cfc
 @app.get("/")
 def root():
     return {"message": "API do sistema de aprendizagem adaptativa"}
@@ -112,8 +128,13 @@ def index_images():
 
 
 @app.post("/prompt")
+<<<<<<< HEAD
 def prompt(request: PromptRequestWithPreferences):
     response = generate_adaptive_prompt(request.user_input, request.preferences.dict(), request.session_id)
+=======
+def prompt(request: PromptRequest):
+    response = generate_adaptive_prompt(request.user_input)
+>>>>>>> 1a2aef2be476b4f276ce1d6a88a7ceea75d47cfc
     return {"response": response}
 
 
@@ -146,6 +167,7 @@ def view_image():
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     print("🚀 Iniciando indexação manual...")
 
     print("Iniciando indexação de textos...")
@@ -167,3 +189,12 @@ if __name__ == "__main__":
 
     print("\n🏁 Processo finalizado.")
 
+=======
+    print("Iniciando indexação manual...")
+    idx_texts(client, hf_ef)
+    idx_pdfs(client, hf_ef)
+    idx_videos(client, hf_ef)
+    idx_images(client, hf_ef)
+    transcribe_video()
+    view_image()
+>>>>>>> 1a2aef2be476b4f276ce1d6a88a7ceea75d47cfc

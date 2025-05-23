@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+openai
+chromadb
+pdfplumber
+whisper
+ffmpeg-python
+python-dotenv
+tqdm
+google-generativeai 
