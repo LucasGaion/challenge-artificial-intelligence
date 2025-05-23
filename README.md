@@ -80,7 +80,6 @@ challenge-artificial-intelligence-main/
    uvicorn backend.main:app --reload
    ```
 
-<<<<<<< HEAD
 6. **Sirva o frontend (HTML) em outro terminal**
    ```bash
    cd <diretório onde está o index.html>
@@ -91,6 +90,7 @@ challenge-artificial-intelligence-main/
    - Abra o navegador em: [http://localhost:8000/index.html](http://localhost:8000/index.html)
 
 ---
+
 
 ## Resolvendo problemas comuns
 
@@ -142,53 +142,3 @@ https://github.com/seu-usuario/seu-repo/raw/main/IA.mov
 ![Exemplo de uso do chat adaptativo](IA.png)
 
 > *A imagem acima mostra a interface do chat, com sugestões de temas, botões de escolha e uma resposta personalizada da I.A.*
-=======
-5. **Acesse a documentação interativa:**
-   - [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-
-## Endpoints principais
-
-- `POST /index/texts`   — Indexa textos e exercícios
-- `POST /index/pdfs`    — Indexa PDFs
-- `POST /index/videos`  — Indexa vídeos (transcrição)
-- `POST /index/images`  — Indexa imagens (OCR)
-- `POST /prompt`        — Busca adaptativa (retorna trechos relevantes de todos os arquivos)
-
-### Exemplo de uso do endpoint de busca
-
-```bash
-curl -X POST http://127.0.0.1:8000/prompt \
-     -H "Content-Type: application/json" \
-     -d '{"user_input": "O que é inteligência artificial?"}'
-```
-
-### Exemplo de resposta
-```json
-{
-  "response": "Fonte: Apresentação.txt (tipo: texts)\nTrecho relevante: ...\n\nFonte: Exercícios.json (tipo: exercises)\nTrecho relevante: ...\n..."
-}
-```
-
-## Testes rápidos dos endpoints
-
-Execute todos os testes de indexação e busca com:
-```bash
-python backend/test_curls.py
-```
-
-## Observações
-- O projeto está modularizado para facilitar manutenção e expansão.
-- Todos os endpoints de indexação retornam o conteúdo indexado.
-- O sistema pode ser facilmente expandido para outros tipos de arquivos ou fontes.
-
-## Melhorias sugeridas
-- Interface web para uploads e buscas
-- Indexação visual de imagens (além de OCR)
-- Suporte a múltiplos usuários
-- Testes automatizados
-- Deploy em nuvem
-
----
-
-Dúvidas ou sugestões? Abra uma issue ou entre em contato!
->>>>>>> 1a2aef2be476b4f276ce1d6a88a7ceea75d47cfc
