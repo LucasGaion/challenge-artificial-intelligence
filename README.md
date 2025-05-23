@@ -85,7 +85,5 @@ https://github.com/seu-usuario/seu-repo/raw/main/IA.mov
 > *Assista ao vídeo acima para ver uma conversa real com a I.A, desde a personalização do chat até a sugestão de conteúdos adaptativos e interativos.*
 
 ### Exemplo em Imagem
-
-![Exemplo de uso do chat adaptativo](IA.png)
-
+![Exemplo de uso do chat adaptativo](prototipo/IA.png)
 > *A imagem acima mostra a interface do chat, com sugestões de temas, botões de escolha e uma resposta personalizada da I.A.*
