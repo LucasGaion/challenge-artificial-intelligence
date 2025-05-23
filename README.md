@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 
 
 ## Como rodar o projeto
@@ -9,59 +8,10 @@
    ```
 
 2. **Instale as dependências**
-=======
-# Sistema de Aprendizagem Adaptativa com IA
-
-Este projeto é um backend em Python (FastAPI) para indexação, busca semântica e sumarização de conteúdos educacionais em diversos formatos: textos, exercícios (JSON), PDFs, vídeos (transcrição) e imagens (OCR). Utiliza ChromaDB para armazenamento e busca semântica, com embeddings do modelo HuggingFace all-MiniLM-L6-v2.
-
-## Estrutura do Projeto
-
-```
-challenge-artificial-intelligence-main/
-├── backend/
-│   ├── main.py                # API FastAPI principal
-│   ├── prompt_engine.py       # Engine de busca adaptativa
-│   ├── indexer/               # Funções modulares de indexação
-│   │   ├── __init__.py
-│   │   ├── index_texts.py
-│   │   ├── index_pdfs.py
-│   │   ├── index_videos.py
-│   │   ├── index_images.py
-│   │   └── save_response.py
-│   └── test_curls.py          # Script de testes dos endpoints via curl
-├── resources/                 # Arquivos a serem indexados
-│   ├── Apresentação.txt
-│   ├── Exercícios.json
-│   ├── Capítulo do Livro.pdf
-│   ├── Dica do professor.mp4
-│   └── Infografico-1.jpg
-├── chroma_db/                 # Banco de dados ChromaDB
-├── requirements.txt           # Dependências do projeto
-├── README.md                  # Este arquivo
-└── COMMENTS.md                # Comentários técnicos e decisões
-```
-
-## Como rodar o projeto
-
-1. **Clone o repositório e entre na pasta:**
-   ```bash
-   git clone <url-do-repo>
-   cd challenge-artificial-intelligence-main
-   ```
-
-2. **Crie e ative um ambiente virtual:**
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
-
-3. **Instale as dependências:**
->>>>>>> 1a2aef2be476b4f276ce1d6a88a7ceea75d47cfc
    ```bash
    pip install -r requirements.txt
    ```
 
-<<<<<<< HEAD
 3. **Garanta permissões de escrita/leitura na pasta do banco**
    ```bash
    chmod -R u+rw chroma_db/
@@ -73,9 +23,6 @@ challenge-artificial-intelligence-main/
    ```
 
 5. **Inicie o backend (FastAPI)**
-=======
-4. **Execute a API:**
->>>>>>> 1a2aef2be476b4f276ce1d6a88a7ceea75d47cfc
    ```bash
    uvicorn backend.main:app --reload
    ```
