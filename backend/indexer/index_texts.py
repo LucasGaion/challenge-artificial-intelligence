@@ -2,6 +2,10 @@ import os
 import json
 
 def index_texts(client, hf_ef):
+    """
+    Função para indexar textos a partir de arquivos.
+    Lê o conteúdo de arquivos de texto e os adiciona a uma coleção no banco de dados.
+    """
     indexed = {}
     txt_path = os.path.join("resources", "Apresentação.txt")
     if os.path.exists(txt_path):

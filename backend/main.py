@@ -6,10 +6,14 @@ import os
 import whisper
 from PIL import Image
 
-import chromadb
-from chromadb.config import Settings
-
-from .indexer import index_texts as idx_texts, index_pdfs as idx_pdfs, index_videos as idx_videos, index_images as idx_images, client, hf_ef
+from .indexer import (
+    index_texts as idx_texts,
+    index_pdfs as idx_pdfs,
+    index_videos as idx_videos,
+    index_images as idx_images,
+    client,
+    hf_ef
+)
 from .prompt_engine import generate_adaptive_prompt
 
 console = Console()
@@ -18,6 +22,18 @@ app = FastAPI()
 
 class PromptRequest(BaseModel):
     user_input: str
+
+
+def safe_execute(label: str, func):
+    console.print(f"\n🔄 {label}...")
+    start = time.time()
+    try:
+        result = func()
+        console.print(f"✅ {label} concluído em {time.time() - start:.2f}s")
+        return result
+    except Exception as e:
+        console.print(f"❌ Erro ao executar '{label}': {e}")
+        return None
 
 
 @app.get("/")
@@ -112,10 +128,24 @@ def view_image():
 
 
 if __name__ == "__main__":
-    print("Iniciando indexação manual...")
-    idx_texts(client, hf_ef)
-    idx_pdfs(client, hf_ef)
-    idx_videos(client, hf_ef)
-    idx_images(client, hf_ef)
-    transcribe_video()
-    view_image()
+    print("🚀 Iniciando indexação manual...")
+
+    print("Iniciando indexação de textos...")
+    textos_indexados = safe_execute("Indexação de textos", lambda: idx_texts(client, hf_ef))
+    if textos_indexados:
+        print(f"Conteúdo indexado (textos): {textos_indexados}")
+
+    print("Iniciando indexação de PDFs...")
+    pdfs_indexados = safe_execute("Indexação de PDFs", lambda: idx_pdfs(client, hf_ef))
+    if pdfs_indexados:
+        print(f"Conteúdo indexado (PDFs): {pdfs_indexados}")
+
+    videos_indexados = safe_execute("Indexação de vídeos", lambda: idx_videos(client, hf_ef))
+    imagens_indexadas = safe_execute("Indexação de imagens", lambda: idx_images(client, hf_ef))
+
+    print("\n🎧 Processos adicionais...")
+    safe_execute("Transcrição de vídeo", transcribe_video)
+    safe_execute("Visualização de imagem", view_image)
+
+    print("\n🏁 Processo finalizado.")
+

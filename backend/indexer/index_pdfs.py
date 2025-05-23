@@ -2,6 +2,10 @@ import os
 import pdfplumber
 
 def index_pdfs(client, hf_ef):
+    """
+    Endpoint para indexar pdfs.
+    Mede o tempo necessário para indexar o pdfs e registra o resultado.
+    """
     indexed = {}
     pdf_path = os.path.join("resources", "Capítulo do Livro.pdf")
     if os.path.exists(pdf_path):

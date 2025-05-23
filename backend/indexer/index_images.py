@@ -4,6 +4,10 @@ import pytesseract
 from pytesseract import TesseractError
 
 def index_images(client, hf_ef):
+    """
+    Endpoint para indexar imagens.
+    Mede o tempo necessário para indexar as imagens e registra o resultado.
+    """
     indexed = {}
     image_path = os.path.join("resources", "Infografico-1.jpg")
     if not os.path.exists(image_path):
