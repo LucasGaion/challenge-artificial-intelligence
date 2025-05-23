@@ -1,6 +1,9 @@
 
 ### Exemplo em Imagem
-![Exemplo de uso do chat adaptativo](prototipo/IA.png)
+![Exemplo de uso do chat adaptativo](prototipo/IA_2.png)
+![Exemplo de uso do chat adaptativo](prototipo/IA_3.png)
+![Exemplo de uso do chat adaptativo](prototipo/IA_4.png)
+
 > *A imagem acima mostra a interface do chat, com sugestões de temas, botões de escolha e uma resposta personalizada da I.A.*
 
 
