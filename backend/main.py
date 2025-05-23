@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rich.console import Console
 import time
@@ -19,9 +20,26 @@ from .prompt_engine import generate_adaptive_prompt
 console = Console()
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"],  
+)
+
 
 class PromptRequest(BaseModel):
     user_input: str
+
+
+class UserPreferences(BaseModel):
+    format: str = "text"  
+
+class PromptRequestWithPreferences(BaseModel):
+    user_input: str
+    preferences: UserPreferences = UserPreferences()
+    session_id: str = "default"
 
 
 def safe_execute(label: str, func):
@@ -94,8 +112,8 @@ def index_images():
 
 
 @app.post("/prompt")
-def prompt(request: PromptRequest):
-    response = generate_adaptive_prompt(request.user_input)
+def prompt(request: PromptRequestWithPreferences):
+    response = generate_adaptive_prompt(request.user_input, request.preferences.dict(), request.session_id)
     return {"response": response}
 
 

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat de Aprendizagem Adaptativa</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💬</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #007bff;
+      --primary-dark: #0056b3;
+      --success: #28a745;
+      --background: #f4f4f4;
+      --white: #fff;
+      --shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --radius: 14px;
+      --transition: 0.18s cubic-bezier(.4,0,.2,1);
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--background);
+      margin: 0;
+      padding: 0;
+      color: #222;
+    }
+    header {
+      background: var(--white);
+      box-shadow: var(--shadow);
+      border-radius: 0 0 var(--radius) var(--radius);
+      padding: 18px 0 10px 0;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    header h1 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+    main {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--white);
+      padding: 24px 24px 0 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      min-height: 80vh;
+      position: relative;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    #messages {
+      flex: 1 1 auto;
+      max-height: 350px;
+      min-height: 180px;
+      overflow-y: auto;
+      margin-bottom: 0;
+      padding-right: 4px;
+      margin-top: 8px;
+    }
+    .msg {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      background: #eaeaea;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .user .avatar {
+      background: #007bff;
+      color: #fff;
+    }
+    .bot .avatar {
+      background: #28a745;
+      color: #fff;
+    }
+    .bubble {
+      background: #f0f0f0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      max-width: 75%;
+      font-size: 16px;
+      line-height: 1.5;
+      word-break: break-word;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .user .bubble {
+      background: #e6f0ff;
+      color: var(--primary);
+      margin-left: auto;
+    }
+    .bot .bubble {
+      background: #eafbe7;
+      color: #155724;
+      border: 1.5px solid #b6e2c6;
+      box-shadow: 0 2px 8px rgba(40,167,69,0.07);
+      padding: 18px 20px;
+      font-size: 17px;
+    }
+    .bot .bubble pre {
+      background: #222;
+      color: #fff;
+      border-radius: 8px;
+      padding: 12px;
+      overflow-x: auto;
+      font-size: 15px;
+      margin: 12px 0;
+    }
+    .bot .bubble code {
+      background: #d1f5e0;
+      color: #1b5e20;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 95%;
+      font-family: monospace;
+    }
+    .bot .bubble ul, .bot .bubble ol {
+      margin: 12px 0 12px 24px;
+      padding-left: 18px;
+    }
+    .bot .bubble h1, .bot .bubble h2, .bot .bubble h3 {
+      margin: 10px 0 8px 0;
+      font-weight: 600;
+      color: #218838;
+    }
+    .bot .bubble blockquote {
+      background: #d6f5e3;
+      border-left: 4px solid #28a745;
+      margin: 12px 0;
+      padding: 10px 18px;
+      color: #2e5c3c;
+      font-style: italic;
+      border-radius: 6px;
+    }
+    .bot .bubble strong, .bot .bubble b {
+      color: #155724;
+    }
+    #input-bar {
+      position: sticky;
+      bottom: 0;
+      background: #f8fafd;
+      padding: 14px 12px 14px 12px;
+      border-radius: 0 0 12px 12px;
+      z-index: 2;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+      border-top: 1px solid #e3eaf2;
+    }
+    #input {
+      flex: 1 1 auto;
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid #b6d4fe;
+      border-radius: 22px;
+      font-size: 16px;
+      margin-bottom: 0;
+      box-sizing: border-box;
+      background: #fafdff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    #input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px #b6d4fe;
+      background: #fff;
+    }
+    #send {
+      background: linear-gradient(90deg, #007bff 60%, #0056b3 100%);
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 22px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,123,255,0.08);
+      transition: background 0.18s, box-shadow 0.18s, transform 0.1s;
+      outline: none;
+    }
+    #send:active {
+      background: linear-gradient(90deg, #0056b3 60%, #007bff 100%);
+      box-shadow: 0 1px 4px rgba(0,123,255,0.10);
+      transform: scale(0.97);
+    }
+    #send:hover, #send:focus {
+      background: linear-gradient(90deg, #0056b3 60%, #007bff 100%);
+    }
+    .suggestions {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .suggestion {
+      background: #f8f8f8;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: 1px solid #ddd;
+    }
+    .suggestion:hover {
+      background: #eaeaea;
+    }
+    .suggestion code {
+      background: #ddd;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 90%;
+      font-family: monospace;
+    }
+    .typing {
+      font-style: italic;
+      color: #888;
+      margin-left: 46px;
+      margin-bottom: 8px;
+      font-size: 15px;
+      animation: blink 1.2s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+    @media (max-width: 700px) {
+      main {
+        max-width: 98vw;
+        padding: 8px 2vw 0 2vw;
+        min-height: 95vh;
+      }
+      #input-bar {
+        padding: 10px 4px 10px 4px;
+      }
+      #input {
+        font-size: 15px;
+        padding: 11px 10px;
+      }
+      #send {
+        font-size: 15px;
+        padding: 10px 14px;
+      }
+    }
+    .profile-setup {
+      background: #fafdff;
+      border-radius: 18px;
+      border: 1.5px solid #b6d4fe;
+      box-shadow: 0 2px 12px rgba(0,123,255,0.07);
+      padding: 18px 18px 12px 18px;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .profile-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #007bff;
+      margin-bottom: 4px;
+      letter-spacing: 0.1px;
+    }
+    .profile-instructions {
+      font-size: 14px;
+      color: #218838;
+      margin-bottom: 10px;
+    }
+    .profile-name-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 320px;
+      margin-top: 6px;
+    }
+    .profile-pencil {
+      font-size: 22px;
+      color: #007bff;
+    }
+    #send, #input, .avatar-option {
+      transition: box-shadow var(--transition), background var(--transition), border-color var(--transition), outline var(--transition);
+    }
+    .avatar-option.selected {
+      outline: 3px solid var(--primary);
+      background: #e6f0ff;
+      border-radius: 50%;
+    }
+    #studentName:focus {
+      box-shadow: 0 0 0 2px var(--primary);
+      border-color: var(--primary);
+      background: #fff;
+    }
+    .nivel-btn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 18px;
+      padding: 10px 18px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .nivel-btn:hover {
+      background: #0056b3;
+    }
+    .nivel-buttons, .formato-buttons, .dificuldade-buttons {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 aria-label="Chat de Aprendizagem Adaptativa">💬 Converse com a I.A</h1>
+  </header>
+  <main aria-label="Janela principal do chat">
+    <section class="profile-setup" aria-label="Personalização do usuário">
+      <div class="profile-title">Personalize seu chat</div>
+      <div class="profile-instructions">Escolha um ícone e digite seu nome:</div>
+      <div id="avatar-select" style="display: flex; gap: 8px; margin-bottom: 10px;" aria-label="Seleção de avatar">
+        <span class="avatar-option" data-emoji="🧑" style="font-size: 26px; cursor: pointer;" tabindex="0" aria-label="Avatar 1">🧑</span>
+        <span class="avatar-option" data-emoji="😀" style="font-size: 26px; cursor: pointer;" tabindex="0" aria-label="Avatar 2">😀</span>
+        <span class="avatar-option" data-emoji="😎" style="font-size: 26px; cursor: pointer;" tabindex="0" aria-label="Avatar 3">😎</span>
+        <span class="avatar-option" data-emoji="👩‍💻" style="font-size: 26px; cursor: pointer;" tabindex="0" aria-label="Avatar 4">👩‍💻</span>
+        <span class="avatar-option" data-emoji="🧑‍🎓" style="font-size: 26px; cursor: pointer;" tabindex="0" aria-label="Avatar 5">🧑‍🎓</span>
+        <span class="avatar-option" data-emoji="🦸‍♂️" style="font-size: 26px; cursor: pointer;" tabindex="0" aria-label="Avatar 6">🦸‍♂️</span>
+        <span class="avatar-option" data-emoji="🦸‍♀️" style="font-size: 26px; cursor: pointer;" tabindex="0" aria-label="Avatar 7">🦸‍♀️</span>
+      </div>
+      <div class="profile-name-row">
+        <span class="profile-pencil" aria-hidden="true">📝</span>
+        <input
+          id="studentName"
+          type="text"
+          placeholder="Digite seu nome..."
+          aria-label="Digite seu nome"
+          style="flex:1; padding: 12px 14px; border-radius: 22px; border: none; font-size: 16px; background: transparent; outline: none; transition: box-shadow 0.2s;"
+          onfocus="this.parentNode.style.boxShadow='0 2px 12px rgba(0,123,255,0.18)';this.parentNode.style.borderColor='#007bff';"
+          onblur="this.parentNode.style.boxShadow='0 2px 12px rgba(0,123,255,0.07)';this.parentNode.style.borderColor='#b6d4fe';"
+        />
+      </div>
+    </section>
+    <section class="suggestions" id="suggestions" aria-label="Sugestões de perguntas">
+      <div class="suggestion" onclick="fillCommand('O que é HTML5 e por que ele é importante para a web?')">
+        <code>Sobre HTML5</code> - O que é HTML5 e por que ele é importante para a web?
+      </div>
+      <div class="suggestion" onclick="fillCommand('Quais são os principais elementos da estrutura de uma página HTML5?')">
+        <code>Estrutura HTML5</code> - Quais são os principais elementos da estrutura de uma página HTML5?
+      </div>
+      <div class="suggestion" onclick="fillCommand('Como funciona a formatação de texto em HTML5?')">
+        <code>Formatação de texto</code> - Como funciona a formatação de texto em HTML5?
+      </div>
+      <div class="suggestion" onclick="fillCommand('O que são e como funcionam as listas e tabelas em HTML5?')">
+        <code>Listas e tabelas</code> - O que são e como funcionam as listas e tabelas em HTML5?
+      </div>
+      <div class="suggestion" onclick="fillCommand('Qual a diferença entre um link e uma âncora em HTML5?')">
+        <code>Links e âncoras</code> - Qual a diferença entre um link e uma âncora em HTML5?
+      </div>
+    </section>
+    <section id="messages" aria-live="polite" aria-label="Mensagens do chat"></section>
+    <nav id="input-bar" aria-label="Barra de entrada de mensagem">
+      <input id="input" type="text" placeholder="Digite sua pergunta ou comando..." autocomplete="off" aria-label="Digite sua pergunta ou comando" />
+      <button id="send" aria-label="Enviar mensagem">
+        &#10148; Enviar
+      </button>
+    </nav>
+  </main>
+  <script>
+    const input = document.getElementById('input');
+    const send = document.getElementById('send');
+    const messages = document.getElementById('messages');
+    const suggestionsBox = document.getElementById('suggestions');
+    const avatarSelect = document.getElementById('avatar-select');
+
+    // Função para obter o avatar selecionado
+    function getUserAvatar() {
+      return localStorage.getItem('user_avatar') || '🧑';
+    }
+    // Evento de seleção de avatar
+    if (avatarSelect) {
+      avatarSelect.addEventListener('click', (e) => {
+        if (e.target.classList.contains('avatar-option')) {
+          const emoji = e.target.getAttribute('data-emoji');
+          localStorage.setItem('user_avatar', emoji);
+          document.querySelectorAll('.avatar-option').forEach(opt => opt.classList.remove('selected'));
+          e.target.classList.add('selected');
+        }
+      });
+      // Destacar avatar salvo ao carregar
+      window.addEventListener('DOMContentLoaded', () => {
+        const saved = getUserAvatar();
+        document.querySelectorAll('.avatar-option').forEach(opt => {
+          if (opt.getAttribute('data-emoji') === saved) {
+            opt.classList.add('selected');
+          }
+        });
+      });
+    }
+
+    // Adiciona mensagem ao chat com avatar
+    function addMessage(text, sender) {
+      const div = document.createElement('div');
+      div.className = `msg ${sender}`;
+      let name = '';
+      if (sender === 'user') {
+        const studentName = document.getElementById('studentName').value.trim();
+        name = studentName ? `<span style='font-weight:600; margin-left:6px; color:#007bff;'>${studentName}</span>` : '';
+      }
+      const avatar = sender === 'user'
+        ? `<div class="avatar" title="Você">${getUserAvatar()}</div>${name}`
+        : `<div class="avatar" title="IA">🤖</div>`;
+      let bubbleContent = text;
+      if (sender === 'bot') {
+        // Renderiza Markdown para respostas do bot
+        bubbleContent = marked.parse(text);
+      }
+      div.innerHTML = sender === 'user'
+        ? `${avatar}<div class="bubble">${bubbleContent}</div>`
+        : `${avatar}<div class="bubble bot-bubble">${bubbleContent}</div>`;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function showTyping() {
+      const typing = document.createElement('div');
+      typing.className = 'typing';
+      typing.id = 'typing';
+      typing.innerText = 'IA está digitando...';
+      messages.appendChild(typing);
+      messages.scrollTop = messages.scrollHeight;
+    }
+    function removeTyping() {
+      const typing = document.getElementById('typing');
+      if (typing) typing.remove();
+    }
+
+    async function fetchResponse(question) {
+      try {
+        // Gera ou recupera session_id único do usuário
+        let sessionId = localStorage.getItem('session_id');
+        if (!sessionId) {
+          sessionId = crypto.randomUUID();
+          localStorage.setItem('session_id', sessionId);
+        }
+        const res = await fetch('http://127.0.0.1:8000/prompt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_input: question, preferences: { format: 'text' }, session_id: sessionId })
+        });
+        const data = await res.json();
+        return data.response;
+      } catch (error) {
+        console.error('Erro ao buscar resposta:', error);
+        return 'Erro ao conectar com o servidor. Tente novamente.';
+      }
+    }
+
+    async function handleUserInput() {
+      const question = input.value.trim();
+      if (!question) return;
+      addMessage(question, 'user');
+      input.value = '';
+      suggestionsBox.style.display = 'none';
+      showTyping();
+      const response = await fetchResponse(question);
+      removeTyping();
+      addMessage(response, 'bot');
+      if (/nível de conhecimento/i.test(response)) {
+        addNivelButtons();
+      }
+      if (/formato de aprendizado|prefere\? \(texto, vídeo, áudio ou imagem\)/i.test(response)) {
+        addFormatoButtons();
+      }
+      if (/desafiador|dificuldade|gostaria de focar/i.test(response)) {
+        addDificuldadeButtons();
+      }
+    }
+
+    function fillCommand(text) {
+      input.value = text;
+      input.focus();
+      suggestionsBox.style.display = 'none';
+    }
+
+    function addNivelButtons() {
+      const div = document.createElement('div');
+      div.className = 'nivel-buttons';
+      div.style.display = 'flex';
+      div.style.gap = '10px';
+      ['Iniciante', 'Intermediário', 'Avançado'].forEach(nivel => {
+        const btn = document.createElement('button');
+        btn.textContent = nivel;
+        btn.className = 'nivel-btn';
+        btn.onclick = () => {
+          input.value = nivel.toLowerCase();
+          handleUserInput();
+          div.remove();
+        };
+        div.appendChild(btn);
+      });
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function addFormatoButtons() {
+      const div = document.createElement('div');
+      div.className = 'formato-buttons';
+      div.style.display = 'flex';
+      div.style.gap = '10px';
+      ['Texto', 'Vídeo', 'Áudio', 'Imagem'].forEach(formato => {
+        const btn = document.createElement('button');
+        btn.textContent = formato;
+        btn.className = 'nivel-btn'; // reutiliza o mesmo estilo dos botões de nível
+        btn.onclick = () => {
+          input.value = formato.toLowerCase();
+          handleUserInput();
+          div.remove();
+        };
+        div.appendChild(btn);
+      });
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function addDificuldadeButtons() {
+      const div = document.createElement('div');
+      div.className = 'dificuldade-buttons';
+      div.style.display = 'flex';
+      div.style.gap = '10px';
+      ['Nenhuma', 'HTML', 'CSS', 'JavaScript', 'Outro'].forEach(dif => {
+        const btn = document.createElement('button');
+        btn.textContent = dif;
+        btn.className = 'nivel-btn';
+        btn.onclick = () => {
+          input.value = dif.toLowerCase();
+          handleUserInput();
+          div.remove();
+        };
+        div.appendChild(btn);
+      });
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    send.onclick = handleUserInput;
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleUserInput();
+    });
+
+    input.addEventListener('input', () => {
+      const value = input.value.trim();
+      suggestionsBox.style.display = value.startsWith('/') ? 'flex' : 'none';
+    });
+
+    window.onload = () => {
+      // Saudação dinâmica conforme o horário
+      const now = new Date();
+      const hour = now.getHours();
+      let saudacao = 'Olá';
+      if (hour >= 5 && hour < 12) {
+        saudacao = 'Bom dia';
+      } else if (hour >= 12 && hour < 18) {
+        saudacao = 'Boa tarde';
+      } else {
+        saudacao = 'Boa noite';
+      }
+      addMessage(`${saudacao}! Sobre qual tema você gostaria de conversar ou aprender mais hoje?`, 'bot');
+    };
+  </script>
+</body>
+</html>
