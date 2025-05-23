@@ -87,3 +87,34 @@ Abaixo você encontra exemplos práticos de como a I.A funciona na prática. **O
 https://github.com/seu-usuario/seu-repo/raw/main/IA.mov
 
 > *Assista ao vídeo acima para ver uma conversa real com a I.A, desde a personalização do chat até a sugestão de conteúdos adaptativos e interativos.*
+
+## Como funciona a conversa adaptativa com a IA
+
+O sistema utiliza uma lógica de chat adaptativo, onde a IA conduz o estudante por etapas para personalizar o aprendizado:
+
+1. **Identificação do nível:**  
+   A IA pergunta se o estudante é iniciante, intermediário ou avançado.
+
+2. **Preferência de formato:**  
+   Em seguida, pergunta qual formato de conteúdo o estudante prefere (texto, vídeo, áudio ou imagem).
+
+3. **Dificuldades específicas:**  
+   A IA questiona se há algum tema ou tópico que o estudante considera mais difícil (ex: HTML, CSS, JavaScript, etc).
+
+4. **Entrega personalizada:**  
+   Com base nessas respostas, a IA busca e retorna conteúdos relevantes, indicando a fonte e o tipo de material.
+
+### Exemplo de diálogo adaptativo
+
+```
+IA: Qual seu nível de conhecimento sobre o tema? (Iniciante, Intermediário, Avançado)
+Estudante: Iniciante
+
+IA: Qual formato de aprendizado você prefere? (Texto, Vídeo, Áudio, Imagem)
+Estudante: Vídeo
+
+IA: Existe algum tópico específico que você considera mais desafiador? (Nenhuma, HTML, CSS, JavaScript, Outro)
+Estudante: CSS
+
+IA: Aqui está um vídeo selecionado especialmente para você sobre CSS. Fonte: Dica do professor.mp4 (tipo: vídeos)
+```
