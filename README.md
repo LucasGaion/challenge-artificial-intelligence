@@ -81,7 +81,6 @@ Abaixo você encontra exemplos práticos de como a I.A funciona na prática. **O
 ### Demonstração em Vídeo
 
 https://github.com/seu-usuario/seu-repo/raw/main/IA.mov
-![Exemplo de uso do chat adaptativo](prototipo/IA.mov)
 
 > *Assista ao vídeo acima para ver uma conversa real com a I.A, desde a personalização do chat até a sugestão de conteúdos adaptativos e interativos.*
 
