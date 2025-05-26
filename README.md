@@ -36,12 +36,14 @@
 
 6. **Sirva o frontend (HTML) em outro terminal**
    ```bash
-   cd <diretório onde está o index.html>
+   http://localhost:8000/frontend/index.html
+
+   source venv/bin/activate
    python -m http.server 8000
    ```
 
 7. **Acesse o sistema**
-   - Abra o navegador em: [http://localhost:8000/index.html](http://localhost:8000/index.html)
+   - Abra o navegador em: [http://localhost:8000/frontend/index.html](http://localhost:8000/frontend/index.html)
 
 ---
 
