@@ -7,4 +7,5 @@ whisper
 ffmpeg-python
 python-dotenv
 tqdm
-google-generativeai 
+google-generativeai
+sentence_transformers 

@@ -57,7 +57,6 @@ def generate_adaptive_prompt(user_input: str, user_preferences: dict = None, ses
 
     user_input_norm = normalize(user_input)
 
-    # Defina preferred_type, type_map e priority logo no início
     preferred_type = state['preferencia'] or 'texto'
     type_map = {
         'texto': ['texts', 'pdfs'],
@@ -69,7 +68,6 @@ def generate_adaptive_prompt(user_input: str, user_preferences: dict = None, ses
     }
     priority = type_map.get(preferred_type, ['texts'])
 
-    # Novo: tratamento para saudações
     saudacoes = [
         "ola", "olá", "oi", "bom dia", "boa tarde", "boa noite", "eae", "opa", "salve"
     ]
@@ -196,21 +194,18 @@ def generate_adaptive_prompt(user_input: str, user_preferences: dict = None, ses
     # Se houver preferência explícita, priorizar esse tipo de conteúdo
     preferencia_explicita = state.get('preferencia_explicita')
     if preferencia_explicita:
-        # Ajusta o preferred_type para o tipo pedido
         if preferencia_explicita in ['vídeo', 'video']:
             preferred_type = 'vídeo'
         elif preferencia_explicita == 'imagem':
             preferred_type = 'imagem'
         elif preferencia_explicita == 'exemplo':
-            # Prioriza exercises se houver
             priority = ['exercises'] + priority
         elif preferencia_explicita == 'desafio':
             priority = ['exercises'] + priority
         elif preferencia_explicita == 'texto' or preferencia_explicita == 'resumo':
             preferred_type = 'texto'
-        # Remove a preferência explícita após usar
+
         del state['preferencia_explicita']
-        # Atualiza a prioridade
         type_map = {
             'texto': ['texts', 'pdfs'],
             'vídeo': ['videos'],
@@ -224,7 +219,6 @@ def generate_adaptive_prompt(user_input: str, user_preferences: dict = None, ses
     results.sort(key=lambda r: 0 if r['collection'] in priority else 1)
     results = results[:3]
 
-    # Histórico simples de temas já respondidos para evitar repetição
     if 'historico_temas' not in state:
         state['historico_temas'] = []
 
@@ -234,7 +228,6 @@ def generate_adaptive_prompt(user_input: str, user_preferences: dict = None, ses
         # Reinicia apenas a dificuldade e avaliação, mantém nível e preferência
         update_user_state(session_id, dificuldade=user_input_norm)
         state["avaliado"] = False
-        # Marca o tema no histórico
         if user_input_norm not in state['historico_temas']:
             state['historico_temas'].append(user_input_norm)
         return (
@@ -242,16 +235,13 @@ def generate_adaptive_prompt(user_input: str, user_preferences: dict = None, ses
         )
 
     if state["dificuldade"] and not state.get("avaliado"):
-        # Novo: se o usuário só responder o nome do tema, já avança
         if user_input_norm == normalize(state["dificuldade"]):
             state["avaliado"] = True
-            # Avança para mostrar o conteúdo normalmente (continua o fluxo)
         else:
             state["avaliado"] = True
             return f"Pra eu te ajudar ainda melhor em {state['dificuldade']}, me conta com suas palavras o que você já sabe sobre esse tema? Pode ser bem à vontade!\n(Se quiser pular, é só digitar o nome do tema de novo ou outro tema que queira aprender!)"
 
     # Ao buscar resultados, evitar repetir o mesmo conteúdo para o mesmo tema
-    # Filtra resultados já mostrados
     resultados_mostrados = state.get('resultados_mostrados', {})
     tema_atual = normalize(state.get('dificuldade', ''))
     if tema_atual and tema_atual in resultados_mostrados:
@@ -293,7 +283,6 @@ def generate_adaptive_prompt(user_input: str, user_preferences: dict = None, ses
     if main_type == 'images':
         descricao = main["metadata"].get("description")
         if not descricao:
-            # Usa o início do documento como fallback
             descricao = main["document"].split(". ")[0][:200]
         resposta = (
             f"Olha só o que encontrei pra você, do jeitinho que você gosta (imagem):\n\n"
